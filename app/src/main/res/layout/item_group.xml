@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/group_card_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="8dp"
+    android:layout_marginTop="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/group_icon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@drawable/group_icon_background"
+            android:gravity="center"
+            android:text="W"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/group_name_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Weekend Trip: Goa"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@id/group_balance_text"
+            app:layout_constraintStart_toEndOf="@id/group_icon"
+            app:layout_constraintTop_toTopOf="@id/group_icon" />
+
+        <TextView
+            android:id="@+id/group_balance_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="you owe ₹250"
+            android:textColor="@color/red"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/group_icon" />
+
+        <TextView
+            android:id="@+id/group_summary_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Total group balance: ₹500"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/group_icon"
+            app:layout_constraintEnd_toStartOf="@id/group_balance_text"
+            app:layout_constraintStart_toStartOf="@id/group_name_text"
+            app:layout_constraintTop_toBottomOf="@id/group_name_text" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>
