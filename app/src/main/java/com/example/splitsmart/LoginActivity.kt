@@ -5,49 +5,61 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
+import android.util.Log
 import com.google.android.material.textfield.TextInputEditText
+import com.example.splitsmart.network.ApiClient
+import com.example.splitsmart.network.ApiService
+import com.example.splitsmart.network.RegisterRequest
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-/**
- * This Activity handles the initial user login/sign-up via phone number.
- * For this initial version, it performs basic 10-digit validation and then navigates
- * to the main app screen (MainActivity).
- */
 class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Set the layout file to use for this screen
         setContentView(R.layout.activity_login)
 
-        // Find the UI elements by their IDs defined in activity_login.xml
         val phoneEditText = findViewById<TextInputEditText>(R.id.phone_edit_text)
         val loginButton = findViewById<Button>(R.id.login_button)
 
-        // Set a click listener for the main login button
         loginButton.setOnClickListener {
-            // 1. Get the text input and remove any leading/trailing spaces
             val phoneNumber = phoneEditText.text.toString().trim()
 
-            // 2. Perform a basic validation check: needs exactly 10 digits
             if (phoneNumber.length == 10) {
-                // If validation passes, show a success message and proceed
-                Toast.makeText(this, "Logged in as $phoneNumber", Toast.LENGTH_SHORT).show()
-                navigateToMainScreen()
+                // Call the backend API
+                val api = ApiClient.retrofit.create(ApiService::class.java)
+                val request = RegisterRequest(
+                    username = phoneNumber, // use phone as username for now
+                    email = "$phoneNumber@gmail.com",
+                    password = "default123"
+                )
+
+                api.registerUser(request).enqueue(object : Callback<ResponseBody> {
+                    override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                        if (response.isSuccessful) {
+                            Toast.makeText(this@LoginActivity, "✅ Registered Successfully!", Toast.LENGTH_SHORT).show()
+                            navigateToMainScreen()
+                        } else {
+                            Toast.makeText(this@LoginActivity, "❌ Server Error: ${response.code()}", Toast.LENGTH_SHORT).show()
+                            Log.e("API", "Error: ${response.errorBody()?.string()}")
+                        }
+                    }
+
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        Toast.makeText(this@LoginActivity, "⚠️ Network Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                        Log.e("API", "Failure: ${t.message}")
+                    }
+                })
             } else {
-                // If validation fails, show an error directly on the input field
                 phoneEditText.error = "Please enter a valid 10-digit phone number."
             }
         }
     }
 
-    /**
-     * Navigates the user to the MainActivity (the main bill splitting screen).
-     */
     private fun navigateToMainScreen() {
-        // Intent is used to switch from one screen (Activity) to another
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
-
-        // Finish the LoginActivity so the user cannot press the back button to return to login
         finish()
     }
 }
